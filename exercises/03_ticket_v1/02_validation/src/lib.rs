@@ -4,6 +4,32 @@ struct Ticket {
     status: String,
 }
 
+enum StatusType {
+    ToDo,
+    InProgress,
+    Done,
+}
+
+impl StatusType {
+
+    fn from_str(s:&str) -> StatusType{
+        match s {
+            "To-Do" => StatusType::ToDo,
+            "In Progress" => StatusType::InProgress,
+            "Done" => StatusType::Done,
+            _ => panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed"),
+        }
+    }
+
+    fn as_str(&self) -> &str {
+        match self {
+            StatusType::ToDo => "To-Do",
+            StatusType::InProgress => "In Progress",
+            StatusType::Done => "Done",
+        }
+    }
+}
+
 impl Ticket {
     // TODO: implement the `new` function.
     //  The following requirements should be met:
@@ -18,7 +44,25 @@ impl Ticket {
     // as well as some `String` methods. Use the documentation of Rust's standard library
     // to find the most appropriate options -> https://doc.rust-lang.org/std/string/struct.String.html
     fn new(title: String, description: String, status: String) -> Self {
-        todo!();
+        if title.is_empty() {
+            panic!("Title cannot be empty");
+        }
+
+        if description.is_empty() {
+            panic!("Description cannot be empty");
+        }
+
+        if title.as_bytes().len()>50{
+            panic!("Title cannot be longer than 50 bytes");
+        }
+
+        if description.as_bytes().len()>500{
+            panic!("Description cannot be longer than 500 bytes");
+        }
+
+        let status_type = StatusType::from_str(&status);
+        let status=status_type.as_str().to_string();
+
         Self {
             title,
             description,
