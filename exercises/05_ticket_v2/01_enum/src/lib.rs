@@ -1,17 +1,23 @@
 // TODO: use `Status` as type for `Ticket::status`
 //   Adjust the signature and implementation of all other methods as necessary.
 
+use core::fmt;
+use std::{error::Error, fmt::Display, str::FromStr};
+
 #[derive(Debug, PartialEq)]
 // `derive`s are recursive: it can only derive `PartialEq` if all fields also implement `PartialEq`.
 // Same holds for `Debug`. Do what you must with `Status` to make this work.
 struct Ticket {
     title: String,
     description: String,
-    status: String,
+    status: Status,
 }
 
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 enum Status {
-    // TODO: add the missing variants
+    ToDo,
+    InProgress,
+    Done,
 }
 
 impl Ticket {
@@ -28,9 +34,10 @@ impl Ticket {
         if description.len() > 500 {
             panic!("Description cannot be longer than 500 bytes");
         }
-        if status != "To-Do" && status != "In Progress" && status != "Done" {
-            panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
-        }
+
+        let result = Status::from_str(&status);
+
+        let status : Status = result.expect("Only `To-Do`, `In Progress`, and `Done` statuses are allowed");
 
         Ticket {
             title,
@@ -47,8 +54,38 @@ impl Ticket {
         &self.description
     }
 
-    pub fn status(&self) -> &String {
+    pub fn status(&self) -> &Status {
         &self.status
+    }
+}
+
+impl Status {
+    
+    pub fn as_str(&self) -> &str{
+        match self {
+            Status::ToDo => "To-Do",
+            Status::InProgress => "In Progress",
+            Status::Done => "Done",
+        }
+    }
+}
+
+impl Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", self.as_str())
+    }
+}
+
+impl FromStr for Status {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        match s {
+            "To-Do" => Ok(Status::ToDo),
+            "In Progress" => Ok(Status::InProgress),
+            "Done" => Ok(Status::Done),
+            _ => Err(()),
+        }
     }
 }
 
