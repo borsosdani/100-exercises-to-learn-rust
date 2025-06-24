@@ -8,3 +8,8 @@
 //
 // Use Rust's package registry, crates.io, to find the dependencies you need
 // (if any) to build this system.
+
+pub mod model;
+pub mod store;
+pub mod handlers;
+pub mod routes;
